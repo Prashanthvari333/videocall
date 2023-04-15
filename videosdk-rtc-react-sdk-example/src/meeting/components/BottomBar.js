@@ -32,19 +32,37 @@ import { Dialog, Popover, Transition } from "@headlessui/react";
 import { createPopper } from "@popperjs/core";
 import { useMeetingAppContext } from "../../MeetingAppContextDef";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-export const captions =({text})=>{
-  return <textarea name="" id="" cols="30" rows="10" value={text}></textarea>
-}
-const Cap=()=>{
-  const [cap,setCap] = useState(false)
+import Cap from './Cap'
+import './Captions.css'
+
+{/*
+  const Caption = ({ text }) => {
+  return (
+    <div className="caption">
+      {text}
+    </div>
+  );
+};
+
+export default Caption;
+const Cap=({transRef})=>{
+  const [cap,setCap] = useState(false)              
   const [text,setText] =  useState('')
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+  const startListening = () => SpeechRecognition.startListening({ continuous: true });
+  // useEffect(setText( transcript.split('.').slice(-2)),[text])
   const onCap=()=>{
     setText('hey u add ur subtitles here..');
     if (cap){
       startListening();
       console.log(transcript);
       setCap(!cap);
-      captions(transcript)
+      Caption(transcript)
       setText(transcript);
     } else{
       SpeechRecognition.stopListening();
@@ -54,27 +72,23 @@ const Cap=()=>{
     console.log(transcript);
     console.log(cap)
   }
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition
-  } = useSpeechRecognition();
-  const startListening = () => SpeechRecognition.startListening({ continuous: true });
-
+  
+    
+    
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
   }
   return (
   <>
-  {console.log(transcript)}
-  <textarea name="" id="" cols="30" rows="10" value={transcript}></textarea>
-  <p style={{color:'white', height:50,position:'fixed'}} >{transcript}</p>
-  <button style ={{color:cap?'green':'red'}} onClick={onCap}>cap</button>
-  {/*<button style={{color:'red'}} onClick={SpeechRecognition.stopListening}>stop</button>*/}
+  <Caption text={ transcript.split('.').slice(-2)}/>
+  {/*<p style={{color:'white', height:50,widht:100,position:'fixed'}} >{transcript}</p>*/}
+  {/*<button style={{color:'red'}} onClick={SpeechRecognition.stopListening}>stop</button>}
+  
+  <button style ={{color:cap?'green':'red'}} ref={transRef} onClick={onCap}>cap</button>
   
   </>);
 }
+*/}
 export function BottomBar({
   bottomBarHeight,
   setIsMeetingLeft,
@@ -82,6 +96,7 @@ export function BottomBar({
   setSelectWebcamDeviceId,
   selectMicDeviceId,
   setSelectMicDeviceId,
+  transRef
 }) {
   const { sideBarMode, setSideBarMode } = useMeetingAppContext();
   const RaiseHandBTN = ({ isMobile, isTab }) => {
@@ -660,9 +675,8 @@ export function BottomBar({
       <MicBTN />
       <WebCamBTN />
       <RecordingBTN />
-      <Cap/>
-      
-      
+      <Cap transRef={transRef}/>
+  
       <OutlinedButton Icon={DotsHorizontalIcon} onClick={handleClickFAB} />
       <Transition appear show={Boolean(open)} as={Fragment}>
         <Dialog

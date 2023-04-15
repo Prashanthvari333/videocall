@@ -6,6 +6,7 @@ import {
   usePubSub,
 } from "@videosdk.live/react-sdk";
 import { BottomBar } from "./components/BottomBar";
+import {Cap} from './components/Cap';
 import { SidebarConatiner } from "../components/sidebar/SidebarContainer";
 import MemorizedParticipantView from "./components/ParticipantView";
 import { PresenterView } from "../components/PresenterView";
@@ -45,6 +46,7 @@ export function MeetingContainer({
   const containerRef = createRef();
   const containerHeightRef = useRef();
   const containerWidthRef = useRef();
+  const transRef = useRef(null);
 
   useEffect(() => {
     containerHeightRef.current = containerHeight;
@@ -287,7 +289,7 @@ export function MeetingContainer({
                 sideBarContainerWidth={sideBarContainerWidth}
               />
             </div>
-
+            <Cap transRef={transRef}/>
             <BottomBar
               bottomBarHeight={bottomBarHeight}
               setIsMeetingLeft={setIsMeetingLeft}
@@ -295,6 +297,7 @@ export function MeetingContainer({
               setSelectWebcamDeviceId={setSelectWebcamDeviceId}
               selectMicDeviceId={selectMicDeviceId}
               setSelectMicDeviceId={setSelectMicDeviceId}
+              transRef={transRef}
             />
           </>
         ) : (

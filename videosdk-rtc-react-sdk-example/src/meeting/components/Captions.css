@@ -1,0 +1,17 @@
+.caption {
+    font-size: 20px;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
