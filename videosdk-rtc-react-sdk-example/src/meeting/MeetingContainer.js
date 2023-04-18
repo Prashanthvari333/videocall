@@ -7,6 +7,7 @@ import {
 } from "@videosdk.live/react-sdk";
 import { BottomBar } from "./components/BottomBar";
 import {Cap} from './components/Cap';
+import { Caption } from "./components/Cap";
 import { SidebarConatiner } from "../components/sidebar/SidebarContainer";
 import MemorizedParticipantView from "./components/ParticipantView";
 import { PresenterView } from "../components/PresenterView";

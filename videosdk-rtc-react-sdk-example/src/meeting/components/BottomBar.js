@@ -33,7 +33,6 @@ import { createPopper } from "@popperjs/core";
 import { useMeetingAppContext } from "../../MeetingAppContextDef";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import Cap from './Cap'
-import './Captions.css'
 
 {/*
   const Caption = ({ text }) => {
@@ -675,7 +674,6 @@ export function BottomBar({
       <MicBTN />
       <WebCamBTN />
       <RecordingBTN />
-      <Cap transRef={transRef}/>
   
       <OutlinedButton Icon={DotsHorizontalIcon} onClick={handleClickFAB} />
       <Transition appear show={Boolean(open)} as={Fragment}>
@@ -762,7 +760,6 @@ export function BottomBar({
         <RaiseHandBTN isMobile={isMobile} isTab={isTab} />
         <MicBTN />
         <WebCamBTN />
-        <Cap/>
         <ScreenShareBTN isMobile={isMobile} isTab={isTab} />
         <LeaveBTN />
       </div>

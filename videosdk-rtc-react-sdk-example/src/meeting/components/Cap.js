@@ -1,19 +1,38 @@
 import React,{useState,useEffect} from "react";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import './Captions.css'
-const Caption = ({ text }) => {
+import { translate } from '@vitalets/google-translate-api';
+import axios from 'axios';
+import './Captions.css';
+import {Translate} from './Translate'
+export const Caption = ({ text }) => {
+    const [transtext,setTranstext] = useState('')
+    useEffect(()=>translateText(text,'te'),[text])
+    const translateText = async (text, targetLang) => {
+      const response = await fetch('http://localhost:9000/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, targetLang })
+      });
+      const translatedText = await response.text();
+      console.log(translatedText)
+      setTranstext(translatedText);
+      
+    }
+    const trans =async(text,targetLang)=>{
+      const res = await fetch(`https://translate.google.co.in/?hl=en&tab=wT&sl=en&tl=te&text=${text}&op=translate`);
+      console.log(res);
+    }
     return (
       <div className="caption">
-        {text}
+        
+        {text} 
+        {transtext}
+        <button style={{color:'ornage',padding:'10px'}} onClick={()=>translateText(text,'te')}>trans</button>
       </div>
     );
   };
-  
-export default Caption;
-export const Cap=({transRef})=>{
-    console.log(transRef)
+export const Cap= (transRef)=>{
     const [cap,setCap] = useState(false)              
-    const [text,setText] =  useState('')
     const {
       transcript,
       listening,
@@ -21,36 +40,25 @@ export const Cap=({transRef})=>{
       browserSupportsSpeechRecognition
     } = useSpeechRecognition();
     const startListening = () => SpeechRecognition.startListening({ continuous: true });
-    // useEffect(setText( transcript.split('.').slice(-2)),[text])
-    const onCap=()=>{
-      setText('hey u add ur subtitles here..');
+    const onCap= async ()=>{
       if (cap){
         startListening();
-        console.log(transcript);
+        
         setCap(!cap);
-        Caption(transcript)
-        setText(transcript);
       } else{
         SpeechRecognition.stopListening();
         setCap(!cap);
       }
-      
-      console.log(transcript);
-      console.log(cap)
     }
-    
-      
-      
     if (!browserSupportsSpeechRecognition) {
       return <span>Browser doesn't support speech recognition.</span>;
     }
     return (
     <>
-    <Caption text={ transcript.split('.').slice(-2)}/>
-    {/*<p style={{color:'white', height:50,widht:100,position:'fixed'}} >{transcript}</p>*/}
-    <button style ={{color:cap?'green':'red'}} onClick={onCap}>cap</button>
-    {/*<button style={{color:'red'}} onClick={SpeechRecognition.stopListening}>stop</button>*/}
-    
-    </>);
+      <Caption text={transcript.split(/[.?,]/).slice(-1)}/>
+      <button style ={{color:cap?'green':'red'}} onClick={onCap}>cap</button>
+
+    </>
+    );
   }
-  
+  export default Cap;

@@ -1,8 +1,8 @@
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const { translate } = require('@vitalets/google-translate-api');
 const { default: fetch } = require("node-fetch");
 const jwt = require("jsonwebtoken");
 
@@ -10,15 +10,7 @@ const PORT = 9000;
 const app = express();
 /* my part*/
 /* my code here */
-const apps = require('http').createServer(app)
-
-const io = require('socket.io')(apps)
-io.on('connection', socket => {
-        socket.on('message', ({ name, message }) => {
-            io.emit('message', { name, message })
-        })
-    })
-    /* my part */
+/* my part */
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,7 +20,6 @@ app.use(morgan("dev"));
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
-
 //
 app.get("/get-token", (req, res) => {
     const API_KEY = process.env.VIDEOSDK_API_KEY;
@@ -61,7 +52,6 @@ app.post("/create-meeting/", (req, res) => {
         .then((result) => res.json(result)) // result will contain meetingId
         .catch((error) => console.error("error", error));
 });
-
 //
 app.post("/validate-meeting/:meetingId", (req, res) => {
     const token = req.body.token;
@@ -79,11 +69,19 @@ app.post("/validate-meeting/:meetingId", (req, res) => {
         .then((result) => res.json(result)) // result will contain meetingId
         .catch((error) => console.error("error", error));
 });
+app.post('/translate', async(req, res) => {
+    console.log('came for me..')
+    try {
+        const { text, targetLang } = req.body; // assuming the request body contains the text to translate and the target language
+        const translation = await translate(text, { to: targetLang });
+        res.send(translation.text);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error translating text');
+    }
+});
 
 //
 app.listen(PORT, () => {
     console.log(`API server listening at http://localhost:${PORT}`);
-});
-apps.listen(5000, () => {
-    console.log(`API server listening at http://localhost:${5000}`);
 });
